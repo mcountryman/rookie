@@ -1,6 +1,8 @@
 # rookie
 Software behind a chess robot
 
+![scrot](https://imgur.com/gahPq3K)
+
 ### Roadmap
 * [ ] Detect board
 * [ ] Detect pieces

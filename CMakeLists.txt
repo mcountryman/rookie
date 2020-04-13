@@ -38,7 +38,7 @@ add_executable(
   utils/format.cpp
   utils/format.hpp
   thirdparty/delaunator.hpp
-  math/triangle.hpp board/frame/resolvers/quad_resolver.cpp board/frame/resolvers/quad_resolver.hpp math/quad.hpp board/frame/resolvers/grid_resolver.cpp board/frame/resolvers/grid_resolver.hpp board/cell.cpp board/cell.hpp)
+  math/triangle.hpp board/frame/resolvers/quad_resolver.cpp board/frame/resolvers/quad_resolver.hpp math/quad.hpp board/frame/resolvers/grid_resolver.cpp board/frame/resolvers/grid_resolver.hpp board/cell.cpp board/cell.hpp math/position.hpp)
 
 message("${OpenCV_LIBS}")
 target_link_libraries(rookie ${OpenCV_LIBS})

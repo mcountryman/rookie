@@ -12,10 +12,9 @@ namespace rookie::board {
 
   class Cell {
   public:
-    int id;
     Quad<float> quad;
   public:
-    explicit Cell(int id, const Quad<float> &quad) : id(id), quad(quad) {}
+    explicit Cell(const Quad<float> &quad) : quad(quad) {}
   };
 }
 

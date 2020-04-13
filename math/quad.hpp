@@ -5,8 +5,11 @@
 #ifndef ROOKIE_QUAD_HPP
 #define ROOKIE_QUAD_HPP
 
+#include <map>
+#include <optional>
 #include <type_traits>
 #include "point.hpp"
+#include "position.hpp"
 #include "line_segment.hpp"
 
 namespace rookie::math {
@@ -90,79 +93,55 @@ namespace rookie::math {
       return length;
     }
 
-    LineSegment<T> GetBottomLine() const {
-      auto max = std::numeric_limits<T>::min();
-      auto result = LineSegment<T>();
+    Position GetNeighborPosition(const Quad<T> &candidate) const {
+      if (top == candidate.bottom)
+        return Position::Left;
+      if (left == candidate.right)
+        return Position::Left;
+      if (right == candidate.left)
+        return Position::Right;
+      if (bottom == candidate.top)
+        return Position::Bottom;
 
-      for (const auto &line : lines()) {
-        const auto line_y = line.GetCenter().y;
-
-        if (max < line_y) {
-          max = line_y;
-          result = line;
-        }
-      }
-
-      return result;
+      return Position::None;
     }
 
-    LineSegment<T> GetTopLine() const {
-      auto max = std::numeric_limits<T>::max();
-      auto result = LineSegment<T>();
+    std::optional<Quad<T>> GetBottomNeighbor(std::vector<Quad<T>> &quads) const {
+      for (const auto &candidate : quads) {
+        const auto position = GetNeighborPosition(candidate);
 
-      for (const auto &line : lines()) {
-        const auto line_y = line.GetCenter().y;
-
-        if (max > line_y) {
-          max = line_y;
-          result = line;
+        if (position == Position::Bottom) {
+          return candidate;
         }
       }
 
-      return result;
+      return {};
     }
 
-    LineSegment<T> GetRightLine() const {
-      auto x = 0;
-      auto right_line = LineSegment<T>();
+    std::optional<Quad<T>> GetRightNeighbor(std::vector<Quad<T>> &quads) const {
+      for (const auto &candidate : quads) {
+        const auto position = GetNeighborPosition(candidate);
 
-      for (const auto &line : lines()) {
-        const auto line_x = line.GetCenter().x;
-
-        if (x < line_x) {
-          x = line_x;
-          right_line = line;
+        if (position == Position::Right) {
+          return candidate;
         }
       }
 
-      return right_line;
+      return {};
     }
 
-    LineSegment<T> GetLeftLine() const {
-      auto x = std::numeric_limits<T>::max();
-      auto right_line = LineSegment<T>();
+    std::map<Position, Quad<T>> GetNeighbors(std::vector<Quad<T>> &quads) const {
+      std::map<Position, Quad<T>> neighbors;
 
-      for (const auto &line : lines()) {
-        const auto line_x = line.GetCenter().x;
+      for (const auto &candidate : quads) {
+        const auto position = GetNeighborPosition(candidate);
 
-        if (x > line_x) {
-          x = line_x;
-          right_line = line;
+        if (position != Position::None) {
+          neighbors[position] = candidate;
         }
       }
 
-      return right_line;
-    }
-
-    bool IsDirectNeighborOf(const Quad<T> &that) const {
-      for (auto &line_a : lines()) {
-        for (auto &line_b : that.lines()) {
-          if (line_a == line_b)
-            return true;
-        }
-      }
-
-      return false;
+      return neighbors;
     }
   public:
     bool operator ==(const Quad<T> &that) const {

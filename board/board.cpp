@@ -52,17 +52,23 @@ namespace rookie::board {
   }
 
   void drawCells(cv::Mat &in, const Frame &frame) {
+    auto id = 0;
     const auto font = cv::FONT_HERSHEY_SIMPLEX;
     const auto scale = 0.4;
-    const auto color = cv::Scalar(255, 100, 100);
+    const auto color = cv::Scalar(0, 0, 0);
     const auto margin = 5;
     const auto thickness = 0;
 
-    for (const auto &row : frame.cells()) {
-      for (const auto &cell : row) {
+    for (auto y = 0; y < frame.cells().size(); y++) {
+      const auto row = frame.cells()[y];
+
+      for (auto x = 0; x < row.size(); x++) {
+        const auto cell = row[x];
+        const auto column = std::string("ABCDEFGH")[x];
+
         cv::putText(
           in,
-          format("cell: %d", cell.id),
+          format("%c,%d", column, y + 1),
           static_cast<cv::Point>(cell.quad.GetCenter()),
           font,
           scale,

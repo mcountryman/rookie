@@ -6,54 +6,60 @@
 #include <vector>
 #include <cell.hpp>
 #include "quad.hpp"
+#include "position.hpp"
 #include "grid_resolver.hpp"
 
 namespace rookie::board::frame::resolvers {
   using namespace rookie::math;
 
-  enum class Position {
-    None = -1,
-
-    Top,
-    Left,
-    Right,
-    Bottom,
-  };
-
-  Position GetNeighborPosition(const Quad<float> &quad, Quad<float> &candidate) {
-    if (quad.top == candidate.bottom)
-      return Position::Left;
-    if (quad.left == candidate.right)
-      return Position::Left;
-    if (quad.right == candidate.left)
-      return Position::Right;
-    if (quad.bottom == candidate.top)
-      return Position::Bottom;
-
-    return Position::None;
-  }
-
-  std::map<Position, int> GetNeighbors(
-    int i,
-    const Quad<float> &quad,
-    std::vector<Quad<float>> &quads
+  bool TryResolveGridRow(
+    const Quad<float> &first_quad,
+    std::vector<Quad<float>> &quads,
+    std::vector<std::vector<Cell>> &result
   ) {
 
-    std::map<Position, int> neighbors;
+    std::vector<Cell> row;
 
-    for (auto j = 0; j < quads.size(); j++) {
-      if (i == j)
-        continue;
+    auto current_quad = first_quad;
+    row.emplace_back(current_quad);
 
-      const auto position = GetNeighborPosition(quad, quads[j]);
-
-      if (position != Position::None) {
-        neighbors[position] = j;
+    for (auto x = 0; x < 7; x++) {
+      if (auto neighbor = current_quad.GetRightNeighbor(quads)) {
+        current_quad = neighbor.value();
+        row.emplace_back(current_quad);
+      } else {
+        return false;
       }
     }
 
-    return neighbors;
-  };
+    result.push_back(row);
+    return true;
+  }
+
+  bool TryResolveGrid(
+    const Quad<float> &quad,
+    std::vector<Quad<float>> &quads,
+    std::vector<std::vector<Cell>> &result
+  ) {
+
+    auto current_quad = quad;
+
+    for (auto y = 0; y < 7; y++) {
+      std::vector<Cell> row;
+
+      if (!TryResolveGridRow(current_quad, quads, result)) {
+        return false;
+      }
+
+      if (auto neighbor = current_quad.GetBottomNeighbor(quads)) {
+        current_quad = neighbor.value();
+      } else {
+        return false;
+      }
+    }
+
+    return TryResolveGridRow(current_quad, quads, result);
+  }
 
   std::vector<std::vector<Cell>> GridResolver::Resolve(std::vector<Quad<float>> &quads) {
     std::sort(
@@ -69,33 +75,14 @@ namespace rookie::board::frame::resolvers {
       }
     );
 
-    std::vector<std::vector<Cell>> results;
+    for (const auto &quad : quads) {
+      std::vector<std::vector<Cell>> results;
 
-    for (auto i = 0; i < quads.size(); i++) {
-      auto quad = quads[i];
-      auto neighbors = GetNeighbors(i, quad, quads);
-      auto quad_row_start = quad;
-
-      if (neighbors.size() != 2) {
-        continue;
-      }
-
-      auto x = 0;
-      auto y = 0;
-
-      for (;;) {
-        if (x < 7) {
-          const auto it = neighbors.find(Position::Right);
-
-          if (it == neighbors.end())
-            break;
-
-          quad = quads[it->second];
-        }
-
+      if (TryResolveGrid(quad, quads, results)) {
+        return results;
       }
     }
 
-    return results;
+    return std::vector<std::vector<Cell>>();
   }
 }
