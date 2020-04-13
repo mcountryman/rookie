@@ -6,3 +6,7 @@ Software behind a chess robot
 * [ ] Detect pieces
 * [ ] Map 2d locations to 3d
 * [ ] Make robot move pieces
+
+### Thirdparty
+* https://opencv.org/
+* https://github.com/delfrrr/delaunator-cpp
