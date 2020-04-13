@@ -15,12 +15,13 @@ int main() {
 
   for (;;) {
     auto frame = cv::Mat();
-    camera >> frame;
 
-    board.ProcessFrame(frame);
-    cv::imshow("rookie", frame);
+    if (camera.read(frame) && !frame.empty()) {
+      if (board.ProcessFrame(&frame))
+        cv::imshow("rookie", frame);
+    }
 
-    if (cv::waitKey(30) >= 0) {
+    if (cv::waitKey(1) >= 0) {
       break;
     }
   }

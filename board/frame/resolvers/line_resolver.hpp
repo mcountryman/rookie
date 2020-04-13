@@ -7,25 +7,29 @@
 
 #include <vector>
 #include <opencv2/core/mat.hpp>
-#include "../../../math/segment.hpp"
+#include "line_segment.hpp"
 
 namespace rookie::board::frame::resolvers {
+  using rookie::math::LineSegment;
+
   class LineResolver {
   public:
     LineResolver() :
-      _rho(MATH_PI / 180),
-      _theta(50),
+      _maxLines(150),
+      _rho(1),
+      _theta(M_PI / 180),
       _blurWidth(3),
       _blurHeight(3),
       _apertureSize(3),
-      _maxLineGap(0),
-      _minLineLength(10),
-      _houghThreshold(50),
-      _cannyThreshold1(50),
-      _cannyThreshold2(200) {}
+      _maxLineGap(350),
+      _minLineLength(250),
+      _houghThreshold(70),
+      _cannyThreshold1(75),
+      _cannyThreshold2(150) {}
   public:
-    std::vector<math::Segmenti> Resolve(cv::Mat &frame) const;
+    std::vector<LineSegment<float>> Resolve(cv::Mat &frame) const;
   private:
+    std::size_t _maxLines;
     double _rho;
     double _theta;
     int _blurWidth;

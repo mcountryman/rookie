@@ -13,8 +13,14 @@
 namespace rookie::board {
   class Board {
   public:
-    void ProcessFrame(cv::Mat &frame);
+    bool ProcessFrame(cv::Mat *frame);
   private:
+    bool _drawDebugInfo = true;
+    bool _drawDebugCells = true;
+    bool _drawDebugLines = false;
+    bool _drawDebugQuads = false;
+    bool _drawDebugPoints = true;
+    bool _drawDebugTriangles = false;
     frame::FrameResolver _frameResolver;
   };
 }
