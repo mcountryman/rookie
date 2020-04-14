@@ -10,35 +10,75 @@ endif ()
 
 find_package(OpenCV REQUIRED)
 include_directories(
-  math
-  utils
-  board
+  src/math
+  src/utils
+  src/board
   thirdparty
   ${OpenCV_INCLUDE_DIRS}
 )
 
 add_executable(
   rookie
-  main.cpp
-  math/line.hpp
-  math/point.hpp
-  math/line_segment.hpp
-  board/board.cpp
-  board/board.hpp
-  board/frame/frame.cpp
-  board/frame/frame.hpp
-  board/frame/frame_resolver.cpp
-  board/frame/frame_resolver.hpp
-  board/frame/resolvers/line_resolver.cpp
-  board/frame/resolvers/line_resolver.hpp
-  board/frame/resolvers/point_resolver.cpp
-  board/frame/resolvers/point_resolver.hpp
-  board/frame/resolvers/triangle_resolver.cpp
-  board/frame/resolvers/triangle_resolver.hpp
-  utils/format.cpp
-  utils/format.hpp
+  src/main.cpp
+  src/math/line.hpp
+  src/math/quad.hpp
+  src/math/point.hpp
+  src/math/position.hpp
+  src/math/triangle.hpp
+  src/math/line_segment.hpp
+  src/board/board.cpp
+  src/board/board.hpp
+  src/board/cell.cpp
+  src/board/cell.hpp
+  src/board/frame/frame.cpp
+  src/board/frame/frame.hpp
+  src/board/frame/frame_resolver.cpp
+  src/board/frame/frame_resolver.hpp
+  src/board/frame/resolvers/quad_resolver.cpp
+  src/board/frame/resolvers/quad_resolver.hpp
+  src/board/frame/resolvers/grid_resolver.cpp
+  src/board/frame/resolvers/grid_resolver.hpp
+  src/board/frame/resolvers/line_resolver.cpp
+  src/board/frame/resolvers/line_resolver.hpp
+  src/board/frame/resolvers/point_resolver.cpp
+  src/board/frame/resolvers/point_resolver.hpp
+  src/board/frame/resolvers/triangle_resolver.cpp
+  src/board/frame/resolvers/triangle_resolver.hpp
+  src/utils/format.cpp
+  src/utils/format.hpp
   thirdparty/delaunator.hpp
-  math/triangle.hpp board/frame/resolvers/quad_resolver.cpp board/frame/resolvers/quad_resolver.hpp math/quad.hpp board/frame/resolvers/grid_resolver.cpp board/frame/resolvers/grid_resolver.hpp board/cell.cpp board/cell.hpp math/position.hpp)
+)
+
+add_library(
+  librookie SHARED
+  src/math/line.hpp
+  src/math/quad.hpp
+  src/math/point.hpp
+  src/math/position.hpp
+  src/math/triangle.hpp
+  src/math/line_segment.hpp
+  src/board/board.cpp
+  src/board/board.hpp
+  src/board/cell.cpp
+  src/board/cell.hpp
+  src/board/frame/frame.cpp
+  src/board/frame/frame.hpp
+  src/board/frame/frame_resolver.cpp
+  src/board/frame/frame_resolver.hpp
+  src/board/frame/resolvers/quad_resolver.cpp
+  src/board/frame/resolvers/quad_resolver.hpp
+  src/board/frame/resolvers/grid_resolver.cpp
+  src/board/frame/resolvers/grid_resolver.hpp
+  src/board/frame/resolvers/line_resolver.cpp
+  src/board/frame/resolvers/line_resolver.hpp
+  src/board/frame/resolvers/point_resolver.cpp
+  src/board/frame/resolvers/point_resolver.hpp
+  src/board/frame/resolvers/triangle_resolver.cpp
+  src/board/frame/resolvers/triangle_resolver.hpp
+  src/utils/format.cpp
+  src/utils/format.hpp
+  thirdparty/delaunator.hpp
+)
 
 message("${OpenCV_LIBS}")
 target_link_libraries(rookie ${OpenCV_LIBS})

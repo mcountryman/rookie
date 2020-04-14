@@ -17,7 +17,7 @@ int main() {
     auto frame = cv::Mat();
 
     if (camera.read(frame) && !frame.empty()) {
-      if (board.ProcessFrame(&frame))
+      if (board.ProcessFrame(frame))
         cv::imshow("rookie", frame);
     }
 

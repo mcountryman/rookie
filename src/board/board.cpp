@@ -142,15 +142,38 @@ namespace rookie::board {
 
   auto resolve_ms = 0.0;
 
+  void warpBoard(cv::Mat &in, const Frame &frame) {
+    const auto tr = frame.cells()[0][0];
+    const auto tl = frame.cells()[0][7];
+    const auto br = frame.cells()[7][0];
+    const auto bl = frame.cells()[7][7];
 
-  bool Board::ProcessFrame(cv::Mat *in) {
+    auto m = cv::getPerspectiveTransform(
+      std::vector<cv::Point2f> {
+        static_cast<cv::Point2f>(tr.quad.p1),
+        static_cast<cv::Point2f>(tl.quad.p4),
+        static_cast<cv::Point2f>(br.quad.p2),
+        static_cast<cv::Point2f>(bl.quad.p3)
+      },
+      std::vector<cv::Point2f> {
+        cv::Point2f(0, 0),
+        cv::Point2f(in.size[0], 0),
+        cv::Point2f(0, in.size[1]),
+        cv::Point2f(in.size[0], in.size[1]),
+      }
+    );
+
+    cv::warpPerspective(in, in, m, cv::Size(in.size[0], in.size[1]));
+  }
+
+  bool Board::ProcessFrame(cv::Mat &in) {
     const auto resolve_before = clock::now();
-    const auto frame = _frameResolver.Resolve(*in);
+    const auto frame = _frameResolver.Resolve(in);
     const auto resolve_delta = clock::now() - resolve_before;
     resolve_ms = (float) duration_cast<milliseconds>(resolve_delta).count();
 
-    // if (frame.cells().empty())
-    //   return false;
+    if (frame.cells().empty())
+      return false;
 
     const auto frame_now = clock::now();
     const auto frame_delta = frame_now - frame_last;
@@ -161,17 +184,20 @@ namespace rookie::board {
     fps = (fps * fps_factor) + (1.0 / frame_seconds * (1.0 - fps_factor));
 
     if (_drawDebugQuads)
-      drawQuads(*in, frame);
+      drawQuads(in, frame);
     if (_drawDebugLines)
-      drawLines(*in, frame);
+      drawLines(in, frame);
     if (_drawDebugPoints)
-      drawPoints(*in, frame);
+      drawPoints(in, frame);
     if (_drawDebugTriangles)
-      drawTriangles(*in, frame);
+      drawTriangles(in, frame);
     if (_drawDebugCells)
-      drawCells(*in, frame);
+      drawCells(in, frame);
+
+    warpBoard(in, frame);
+
     if (_drawDebugInfo)
-      drawText(*in, {
+      drawText(in, {
         format("fps  : %4.2f", fps),
         format("frame: %4.2fms", frame_ms),
         format("resolve: %4.2fms", resolve_ms),
