@@ -3,7 +3,6 @@ from os.path import join, isfile
 from csv import reader, writer
 from cv2 import imwrite
 
-
 class CsvDatasetBuilder:
     directory: str
     classes: dict
@@ -25,6 +24,7 @@ class CsvDatasetBuilder:
         if name not in self.classes:
             self.classes[name] = len(self.classes)
             self._save_classes()
+            print("Wrote to `_classes.csv`")
 
         image_number = len([
             f for f in listdir(self.directory)
@@ -34,6 +34,7 @@ class CsvDatasetBuilder:
         image_name = f"{name}_{image_number:03}.jpg"
         image_path = join(self.directory, image_name)
         imwrite(image_path, image)
+        print(f"Wrote to `{image_name}`")
 
         self.annotations.append({
             "path": image_name,
@@ -45,6 +46,7 @@ class CsvDatasetBuilder:
         })
 
         self._save_annotations()
+        print("Wrote to `_annotations.csv`")
 
     def _save_classes(self):
         with open(self.classes_path, "w", newline='') as f:
