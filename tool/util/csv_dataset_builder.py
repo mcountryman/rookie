@@ -89,19 +89,19 @@ class CsvDatasetBuilder:
             annotations = []
 
             with open(self.annotations_path, newline='') as f:
-                read = reader(f, delimeter=',')
+                read = reader(f)
 
                 for row in read:
                     annotations.append({
                         "path": row[0],
-                        "x1": row[1],
-                        "y1": row[2],
-                        "x2": row[3],
-                        "y2": row[4],
+                        "x1": int(row[1]),
+                        "y1": int(row[2]),
+                        "x2": int(row[3]),
+                        "y2": int(row[4]),
                         "class_name": row[5]
                     })
 
             self.annotations = annotations
             return True
-        except:
+        except Exception as ex:
             return False

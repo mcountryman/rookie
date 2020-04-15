@@ -109,7 +109,6 @@ def get_image_delta(base, base_gray, capture):
 
 def main():
     try:
-
         flag, base, message = prompt_base_img(camera)
 
         if not flag:
