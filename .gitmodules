@@ -1,3 +1,0 @@
-[submodule "thirdparty/keras-retinanet"]
-	path = thirdparty/keras-retinanet
-	url = https://github.com/fizyr/keras-retinanet.git
