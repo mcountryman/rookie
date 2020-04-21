@@ -25,10 +25,9 @@ func doConfig() {
 }
 
 func doCamera() {
-  var err error
-  camera, err = NewCamera(0)
+  camera := NewCamera()
 
-  if err != nil {
+  if err := camera.Open(0); err != nil {
     panic(err)
     return
   }
@@ -50,7 +49,7 @@ func doServer() {
     ),
   )
 
-  app.GET("/ws/camera", handleCamera)
+  doCameraRoutes(app)
 
   if err := app.Run(); err != nil {
     panic(err)

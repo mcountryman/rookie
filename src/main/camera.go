@@ -6,20 +6,20 @@ import (
 )
 
 type Camera struct {
-  done     bool
-  frame    gocv.Mat
-  frameMtx sync.RWMutex
-  camera   *gocv.VideoCapture
+  done      bool
+  frame     gocv.Mat
+  frameMtx  sync.RWMutex
+  camera    *gocv.VideoCapture
+  cameraMtx sync.RWMutex
 }
 
-func NewCamera(id int) (Camera, error) {
-  camera, err := gocv.VideoCaptureDevice(id)
-
+func NewCamera() Camera {
   return Camera{
-    frame:    gocv.NewMat(),
-    frameMtx: sync.RWMutex{},
-    camera:   camera,
-  }, err
+    frame:     gocv.NewMat(),
+    frameMtx:  sync.RWMutex{},
+    camera:    nil,
+    cameraMtx: sync.RWMutex{},
+  }
 }
 
 func (c *Camera) Run() {
@@ -33,9 +33,55 @@ func (c *Camera) GetFrame() gocv.Mat {
   return frame
 }
 
+func (c *Camera) Open(id int) error {
+  camera, err := gocv.VideoCaptureDevice(id)
+
+  if err != nil {
+    return err
+  }
+
+  c.cameraMtx.Lock()
+
+  if c.camera != nil {
+    c.camera.Close()
+  }
+
+  c.camera = camera
+  c.cameraMtx.Unlock()
+
+  return nil
+}
+
+func (c *Camera) GetDeviceProperty(prop gocv.VideoCaptureProperties) float64 {
+  value := -1.0
+
+  c.cameraMtx.RLock()
+
+  if c.camera != nil {
+    value = c.camera.Get(prop)
+  }
+
+  c.cameraMtx.RUnlock()
+
+  return value
+}
+
+func (c *Camera) SetDeviceProperty(prop gocv.VideoCaptureProperties, value float64) {
+  c.cameraMtx.Lock()
+
+  if c.camera != nil {
+    c.camera.Set(prop, value)
+  }
+
+  c.cameraMtx.Unlock()
+}
+
 func (c *Camera) Close() {
   c.done = true
+  c.cameraMtx.Lock()
   c.camera.Close()
+  c.camera = nil
+  c.cameraMtx.Unlock()
 }
 
 func (c *Camera) handleLoop() {
@@ -45,8 +91,17 @@ func (c *Camera) handleLoop() {
 }
 
 func (c *Camera) readFrame() bool {
+  ok := false
+
   c.frameMtx.Lock()
-  ok := c.camera.Read(&c.frame)
+  c.cameraMtx.RLock()
+
+  if c.camera != nil {
+    ok = c.camera.Read(&c.frame)
+  }
+
+  c.cameraMtx.RUnlock()
   c.frameMtx.Unlock()
+
   return ok
 }
