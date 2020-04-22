@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "es2015"
+    ],
+    "jsx": "react",
+    "module": "commonjs",
+    "target": "es2015",
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

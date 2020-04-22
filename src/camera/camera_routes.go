@@ -2,57 +2,77 @@ package camera
 
 import (
   "github.com/gin-gonic/gin"
+  "github.com/gorilla/websocket"
+  "github.com/spf13/viper"
+  "gocv.io/x/gocv"
   "net/http"
   "strconv"
 )
 
+var upgrader = websocket.Upgrader{
+  ReadBufferSize: 1024,
+  WriteBufferSize: 1024,
+}
+
 func SetupRoutes(app *gin.Engine) {
-  app.GET("/cameras/primary", handleGetPrimary)
-  app.PATCH("/cameras/primary/:id", handleSetPrimary)
+  app.GET("camera/ws", handleWs)
 
-  app.GET("/cameras", handleGetCameras)
-  app.GET("/cameras/:id", handleGetCamera)
-  app.PUT("/cameras/:deviceId", handleAddCamera)
-  app.DELETE("/cameras/:id", handleDeleteCamera)
+  app.GET("camera", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, GetProperties()) })
+  app.PATCH("camera", func(ctx *gin.Context) {
+    props := make(map[string] float64)
+
+    if err := ctx.Bind(&props); err != nil {
+      ctx.JSON(http.StatusBadRequest, err)
+      return
+    }
+
+    SetProperties(props)
+
+    if err := viper.WriteConfig(); err != nil {
+      ctx.JSON(http.StatusInternalServerError, err)
+      return
+    }
+
+    ctx.JSON(http.StatusOK, true)
+  })
+
+  app.GET("camera/id", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, GetDeviceId()) })
+  app.PATCH("camera/id/:value", func(ctx *gin.Context) {
+    if id, err := strconv.Atoi(ctx.Param("value")); err != nil {
+      ctx.JSON(http.StatusBadRequest, err)
+    } else {
+      if err := SetDeviceId(id); err != nil {
+        ctx.JSON(http.StatusInternalServerError, err)
+      } else {
+        ctx.JSON(http.StatusOK, true)
+      }
+    }
+  })
 }
 
-func handleGetPrimary(ctx *gin.Context) {
-  primary := GetService().GetPrimary()
-
-  if primary == nil {
-    ctx.JSON(http.StatusOK, primary)
-    return
-  }
-
-  ctx.JSON(http.StatusOK, primary.GetSettings())
-}
-
-func handleSetPrimary(ctx *gin.Context) {
-  ctx.JSON(http.StatusOK, GetService().SetPrimary(ctx.Param("id")))
-}
-
-func handleGetCamera(ctx *gin.Context) {}
-func handleGetCameras(ctx *gin.Context) {}
-
-func handleAddCamera(ctx *gin.Context) {
-  deviceId, err := strconv.Atoi(ctx.Param("deviceId"))
-
-  if err != nil {
-    ctx.JSON(http.StatusBadRequest, err)
-    return
-  }
-
-  camera, err := MakeCamera(deviceId)
+func handleWs(ctx *gin.Context) {
+  conn, err := upgrader.Upgrade(ctx.Writer, ctx.Request, nil)
 
   if err != nil {
     ctx.JSON(http.StatusInternalServerError, err)
     return
   }
 
-  GetService().Add(camera)
-}
+  for {
+    frame, err := GetFrame()
 
-func handleDeleteCamera(ctx *gin.Context) {
-  GetService().Remove(ctx.Param("id"))
-  ctx.JSON(http.StatusOK, true)
+    if err != nil {
+      break
+    }
+
+    buf, err := gocv.IMEncode(".png", frame)
+
+    if err != nil {
+      break
+    }
+
+    if err := conn.WriteMessage(websocket.BinaryMessage, buf); err != nil {
+      break
+    }
+  }
 }
