@@ -30,7 +30,6 @@ export const App = () => {
         <div className={classes.root}>
           <Switch>
             <Route path="/" exact={true} component={Home}/>
-            <Route path="/home" component={Home}/>
             <Route path="/settings" component={Settings}/>
           </Switch>
         </div>

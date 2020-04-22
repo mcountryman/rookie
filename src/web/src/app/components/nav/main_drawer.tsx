@@ -24,8 +24,7 @@ interface IProps {
 const ListItemLink = (props: any) =>
   <ListItem
     button
-    component={(inner: any) => <Link to={props.to} {...inner} />}
-    {...props}
+    component={(inner: any) => <Link to={props.to} component={props.component} />}
   />;
 
 export const MainDrawer = (props: IProps) => {
@@ -39,7 +38,7 @@ export const MainDrawer = (props: IProps) => {
 
       <div className={classes.root}>
         <List>
-          <ListItemLink to="/home">
+          <ListItemLink to="/">
             <ListItemIcon>
               <HomeIcon/>
             </ListItemIcon>

@@ -7,11 +7,13 @@ export const Settings = () => {
     <div>
       <h1>Settings</h1>
       <Grid
+        width="100%"
         spacing={1}
         container
-        direction="column">
+        justify="center"
+        alignItems="center">
 
-        <Grid item xs={12}>
+        <Grid item xs={6}>
           <CameraCard/>
         </Grid>
       </Grid>

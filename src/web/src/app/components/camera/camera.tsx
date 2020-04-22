@@ -6,7 +6,7 @@ export const Camera = () => {
   const [dataUri, setDataUri] = useState("");
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8080/ws/camera");
+    const ws = new WebSocket("ws://localhost:8080/camera/ws");
 
     ws.onmessage = function handle({data}) {
       if (data instanceof Blob) {
