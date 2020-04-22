@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 
 export const Camera = () => {
@@ -8,7 +8,7 @@ export const Camera = () => {
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8080/ws/camera");
 
-    ws.onmessage = function handle({ data }) {
+    ws.onmessage = function handle({data}) {
       if (data instanceof Blob) {
         const reader = new FileReader();
 
@@ -25,7 +25,7 @@ export const Camera = () => {
 
   return <img
     alt="camera"
-    src={ dataUri }
+    src={dataUri}
     width="100%"
   />;
 };

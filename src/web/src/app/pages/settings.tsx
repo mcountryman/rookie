@@ -1,6 +1,6 @@
 import * as React from "react";
-import {Grid} from "@material-ui/core";
-import {CameraCard} from "../components/camera/camera_card";
+import { Grid } from "@material-ui/core";
+import { CameraCard } from "../components/camera/camera_card";
 
 export const Settings = () => {
   return (
@@ -12,7 +12,7 @@ export const Settings = () => {
         direction="column">
 
         <Grid item xs={12}>
-          <CameraCard />
+          <CameraCard/>
         </Grid>
       </Grid>
     </div>

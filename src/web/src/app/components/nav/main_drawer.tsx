@@ -1,7 +1,7 @@
 import * as React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Drawer from "@material-ui/core/Drawer";
-import {List} from "@material-ui/core";
+import { List } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -41,15 +41,15 @@ export const MainDrawer = (props: IProps) => {
         <List>
           <ListItemLink to="/home">
             <ListItemIcon>
-              <HomeIcon />
+              <HomeIcon/>
             </ListItemIcon>
-            <ListItemText primary="Home" />
+            <ListItemText primary="Home"/>
           </ListItemLink>
           <ListItemLink to="/settings">
             <ListItemIcon>
-              <SettingsIcon />
+              <SettingsIcon/>
             </ListItemIcon>
-            <ListItemText primary="Settings" />
+            <ListItemText primary="Settings"/>
           </ListItemLink>
         </List>
       </div>
