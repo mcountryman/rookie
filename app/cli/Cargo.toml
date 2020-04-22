@@ -1,0 +1,10 @@
+[package]
+name = "cli"
+version = "0.0.0"
+authors = ["Marvin Countryman <me@maar.vin>"]
+edition = "2018"
+
+[dependencies]
+actix-web = "2.0"
+actix-rt = "1.0"
+actix-files = "0.2.1"

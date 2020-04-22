@@ -1,0 +1,8 @@
+/home/maarvin/Development/rookie/app/target/debug/deps/mime-6b712144fabd2784.rmeta: /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/lib.rs /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/parse.rs
+
+/home/maarvin/Development/rookie/app/target/debug/deps/libmime-6b712144fabd2784.rlib: /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/lib.rs /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/parse.rs
+
+/home/maarvin/Development/rookie/app/target/debug/deps/mime-6b712144fabd2784.d: /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/lib.rs /home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/parse.rs
+
+/home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/lib.rs:
+/home/maarvin/.cargo/registry/src/github.com-1ecc6299db9ec823/mime-0.3.16/src/parse.rs:
