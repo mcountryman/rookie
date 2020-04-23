@@ -5,6 +5,8 @@ authors = ["Marvin Countryman <me@maar.vin>"]
 edition = "2018"
 
 [dependencies]
+opencv = "0.34.0"
 actix-web = "2.0"
 actix-rt = "1.0"
 actix-files = "0.2.1"
+serde = "1.0.106"

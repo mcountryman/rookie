@@ -1,0 +1,6 @@
+[package]
+name = "board"
+version = "0.0.0"
+authors = ["Marvin Countryman <me@maar.vin>"]
+edition = "2018"
+
