@@ -17,6 +17,13 @@ async fn main() -> Result<()> {
         Files::new("/", "web/dist")
           .index_file("index.html")
       )
+      .wrap_fn(|req, srv| {
+        srv
+          .call(req)
+          .map(|res| {
+            res
+          })
+      })
   })
     .bind("0.0.0.0:8080")?
     .run()
